@@ -3,6 +3,8 @@ $(function () {
     $('.home').width(innerWidth)
 
      new Swiper('#topSwiper', {
+         paginationClickable: true,
+         centeredSlides: true,
         slidesPerView: 1,
         spaceBetween: 30,
         autoplay: 2500,

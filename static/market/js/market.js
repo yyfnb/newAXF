@@ -1,129 +1,90 @@
 $(function () {
-    // 滚动条处理
     $('.market').width(innerWidth)
 
-
-    // 获取下标 typeIndex
+    // 获取typeIndex
     typeIndex = $.cookie('typeIndex')
-    console.log(typeIndex)
-    if(typeIndex){  // 存在，对应分类
+    if (typeIndex){ // 已经有点击分类
         $('.type-slider .type-item').eq(typeIndex).addClass('active')
-    } else {    // 不存在，默认就是热榜
+    } else {    // 没有点击分类
+        // 没有点击默认第一个
         $('.type-slider .type-item:first').addClass('active')
     }
 
 
-    // 侧边栏点击处理 (页面会重新加载)
-    $('.type-slider .type-item').click(function () {
-        // 保存下标
-        // console.log($(this).index())
-        // 保存下标 cookie
-        $.cookie('typeIndex', $(this).index(),{exprires:3, path:'/'})
+    // 侧边栏
+
+
+    // cookie
+    // 设置cookie
+
+
+    // 获取cookie
+
+
+    // 删除cookie
+
+    $('.type-item').click(function () {
+        // $(this).addClass('active')
+        // 记录位置
+        $.cookie('typeIndex', $(this).index(), {expires:3, path:'/'})
     })
 
 
-
-
-    // 分类 和 排序
-    var alltypeBt = false
-    var sortBt = false
-    $('#allBt').click(function () {
+    // 分类按钮
+    categoryBt = false  // 默认是隐藏
+    $('#categoryBt').click(function () {
         // 取反
-        alltypeBt = !alltypeBt
+        categoryBt = !categoryBt
 
-        if (alltypeBt){ // 显示
-            $('.bounce-view.type-view').show()
-            $('#allBt b').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down')
+        categoryBt ? categoryViewShow() : categoryViewHide()
 
-            sortBt = false
-            $('.bounce-view.sort-view').hide()
-            $('#sortBt b').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up')
-        } else {    // 隐藏
-            $('.bounce-view.type-view').hide()
-            $('#allBt b').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up')
-        }
+        // if (categoryBt){    // 显示
+        //     $('.bounce-view.category-view').show()
+        //     $('#categoryBt i').removeClass('glyphicon-triangle-top').addClass('glyphicon-triangle-bottom')
+        // } else {    // 隐藏
+        //     $('.bounce-view.category-view').hide()
+        //     $('#categoryBt i').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-top')
+        // }
     })
 
+
+    // 排序按钮
+    sortBt = false  // 默认是隐藏
     $('#sortBt').click(function () {
         // 取反
         sortBt = !sortBt
 
-        if (sortBt){ // 显示
-            $('.bounce-view.sort-view').show()
-            $('#sortBt b').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down')
-
-            alltypeBt = false
-            $('.bounce-view.type-view').hide()
-            $('#allBt b').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up')
-        } else {    // 隐藏
-            $('.bounce-view.sort-view').hide()
-            $('#sortBt b').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up')
-        }
+        sortBt ? sortViewShow() : sortViewHide()
     })
 
+    // 灰色蒙层
     $('.bounce-view').click(function () {
-        alltypeBt = false
-        $('.bounce-view.type-view').hide()
-            $('#allBt b').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up')
-
         sortBt = false
+        sortViewHide()
+        categoryBt = false
+        categoryViewHide()
+    })
+
+
+    function categoryViewShow() {
+        sortBt = false
+        sortViewHide()
+        $('.bounce-view.category-view').show()
+        $('#categoryBt i').removeClass('glyphicon-triangle-top').addClass('glyphicon-triangle-bottom')
+    }
+    function categoryViewHide() {
+        $('.bounce-view.category-view').hide()
+        $('#categoryBt i').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-top')
+    }
+
+    function sortViewShow() {
+        categoryBt = false
+        categoryViewHide()
+        $('.bounce-view.sort-view').show()
+        $('#sortBt i').removeClass('glyphicon-triangle-top').addClass('glyphicon-triangle-bottom')
+    }
+    function sortViewHide() {
         $('.bounce-view.sort-view').hide()
-        $('.bounce-view.sort-view').hide()
-            $('#sortBt b').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up')
-    })
-
-
-
-    // 购物车操作
-    // 默认隐藏
-    $('.bt-wrapper>.glyphicon-minus').hide()
-    $('.bt-wrapper>.num').hide()
-
-    // 购物车数据不为，即显示
-    // each 遍历操作
-    $('.bt-wrapper>.num').each(function () {
-        if(parseInt($(this).html())){
-            $(this).show()
-            $(this).prev().show()
-        }
-    })
-    
-    // 加操作
-    $('.bt-wrapper>.glyphicon-plus').click(function () {
-        // 商品ID
-        var goodsid = $(this).attr('goodsid')
-        var $that = $(this) // 将this保存起来，因为在ajax请求中，this指向有问题
-
-        // 发起ajax请求
-        $.get('/axf/addtocart/', {'goodsid':goodsid}, function (response) {
-            if (response['status'] == '-1'){    // 未登录
-                // 跳转到登录界面
-                window.open('/axf/login/', target="_self")
-            } else {    // 已登录
-                console.log(response)
-                $that.prev().html(response['number']).show()
-                $that.prev().prev().show()
-            }
-        })
-    })
-
-
-    // 减操作
-    $('.bt-wrapper>.glyphicon-minus').click(function () {
-        var goodsid = $(this).attr('goodsid')
-        var $that = $(this)
-
-        $.get('/axf/subtocart/', {'goodsid':goodsid}, function (response) {
-            console.log(response)
-            if (response['status'] == '1'){
-                var number = parseInt(response['number'])
-                if (number>0){  // 显示
-                    $that.next().html(response['number'])
-                } else {    // 隐藏
-                    $that.next().hide()
-                    $that.hide()
-                }
-            }
-        })
-    })
+        $('#sortBt i').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-top')
+    }
 })
