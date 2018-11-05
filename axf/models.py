@@ -98,3 +98,18 @@ class Goods(models.Model):
     class Meta:
         db_table = 'axf_goods'
 
+
+class User(models.Model):
+#     账号
+    account  = models.CharField(max_length=80,unique=True)
+# 密码
+    password = models.CharField(max_length=256)
+    #name
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20,unique=True)
+    addr = models.CharField(max_length=256)
+    img = models.CharField(max_length=100)
+    rank = models.IntegerField(default=1)
+    token = models.CharField(max_length=256)
+    class Meta:
+        db_table = 'axf_user'
