@@ -22,3 +22,8 @@
 #subButton {
     width: 100%;
 }
+
+.login i{
+    font-size: 0.8rem;
+    color: red;
+}

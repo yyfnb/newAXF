@@ -1,8 +1,22 @@
 {% extends 'base/base.html' %}
+{% load static %}
+{% block extcss %}
+    <link rel="stylesheet" href="{% static 'cart/css/cart.css' %}">
+{% endblock %}
+{% block extjs %}
+    <script src="{% static 'cart/js/cart.js' %}"></script>
+{% endblock %}
 {% block title %}
     cart
 {% endblock %}
 
 {% block content %}
-        cart
+        <div class="cart">
+            <ul>
+                {% for foo in  %}
+                
+                {% endfor %}
+                
+            </ul>
+        </div>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from axf.models import Wheel, Nav, Mustbuy, Shop, MainShow, Foodtypes, Goods, User
+from axf.models import Wheel, Nav, Mustbuy, Shop, MainShow, Foodtypes, Goods, User, Cart
 from py1809AXF import settings
 
 
@@ -38,7 +38,15 @@ def home(request):
 
 
 def cart(request):
-    return render(request,'cart/cart.html')
+    token = request.session.get('token')
+    carts = []
+    if token:
+        user = User.objects.get(token=token)
+        carts = Cart.objects.filter()
+        return render(request,'cart/cart.html')
+    else:
+        pass
+    return redirect('axf:login')
 
 
 def market(request, categoryid, childid, sortid):    # 闪购超市
@@ -90,7 +98,22 @@ def market(request, categoryid, childid, sortid):    # 闪购超市
 
 
 def mine(request):
-    return render(request,'mine/mine.html')
+    token = request.session.get('token')
+
+    responseData = {}
+
+    if token:  # 登录
+        user = User.objects.get(token=token)
+        responseData['name'] = user.name
+        responseData['rank'] = user.rank
+        responseData['img'] = '/static/uploads/' + user.img
+        responseData['isLogin'] = 1
+    else:  # 未登录
+        responseData['name'] = '未登录'
+        responseData['img'] = '/static/uploads/axf.png'
+
+    return render(request, 'mine/mine.html', context=responseData)
+
 
 def genarate_password(param):
     sha = hashlib.sha256()
