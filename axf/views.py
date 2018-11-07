@@ -188,3 +188,11 @@ def login(request):
                 return render(request,'mine/login.html',context={'passwdErr':'密码错误'})
         except:
             return  render(request,'mine/login.html',context={'acountErr':'账号不存在!'})
+
+
+def addcart(request):
+    return None
+
+
+def subcart(request):
+    return None
