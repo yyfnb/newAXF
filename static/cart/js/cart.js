@@ -5,20 +5,21 @@ $(function () {
     total()
 
     // 商品 选中 状态
+     // 单个
     $('.cart .confirm-wrapper').click(function () {
         var cartid = $(this).attr('cartid')
         var $that = $(this)
 
-        $.get('/axf/changecartstatus/', {'cartid':cartid}, function (response) {
+
+        $.get('/changecartstatus/', {'cartid':cartid},function (response) {
             console.log(response)
-            if (response['status'] == '1'){
-                var isselect = response['isselect']
+            if (response.status == 1){
+                var isselect = response.isselect
                 $that.attr('isselect', isselect)
-                // 先清空
-                $that.children().remove()
-                if (isselect){  // 选中
+                $that.children().remove()   // 清空
+                if (isselect){
                     $that.append('<span class="glyphicon glyphicon-ok"></span>')
-                } else {    // 未选中
+                } else {
                     $that.append('<span class="no"></span>')
                 }
 
@@ -26,35 +27,33 @@ $(function () {
                 total()
             }
         })
+
+
     })
 
-    // 全选/取消全选
-    $('.cart .bill .all').click(function () {
-        var isall = $(this).attr('isall')
-        isall = (isall == 'false') ? true : false
-        $(this).attr('isall', isall)
+    // 全选/取消
+    $('.cart .all').click(function () {
+        var isselect = $(this).attr('isselect')
+        isselect = (isselect == 'false') ? true : false
+        $(this).attr('isselect', isselect)
 
-        // 自身状态
-        $(this).children().remove()
-        if (isall){ // 全选
-            $(this).append('<span class="glyphicon glyphicon-ok"></span>').append('<b>全选</b>')
-        } else {    // 取消全选
-            $(this).append('<span class="no"></span>').append('<b>全选</b>')
+
+        if (isselect){
+            $(this).find('span').removeClass('no').addClass('glyphicon glyphicon-ok')
+        } else {
+            $(this).find('span').removeClass('glyphicon glyphicon-ok').addClass('no')
         }
 
-
-        // 发起ajax请求
-        $.get('/axf/changecartselect/', {'isall':isall}, function (response) {
+        $.get('/changecartselect/', {'isselect':isselect}, function (response) {
             console.log(response)
-            if (response['status'] == '1'){
+            if (response.status == 1){
                 // 遍历
                 $('.confirm-wrapper').each(function () {
-                    $(this).attr('isselect', isall)
-                    $(this).children().remove()
-                    if (isall){ // 选中
-                        $(this).append('<span class="glyphicon glyphicon-ok"></span>')
-                    } else {    // 未选中
-                        $(this).append('<span class="no"></span>')
+                    $(this).attr('isselect', isselect)
+                    if (isselect){
+                        $(this).find('span').removeClass('no').addClass('glyphicon glyphicon-ok')
+                    } else {
+                        $(this).find('span').removeClass('glyphicon glyphicon-ok').addClass('no')
                     }
                 })
 
@@ -75,8 +74,9 @@ $(function () {
 
             // 选中，才计算
             if ($confirm.find('.glyphicon-ok').length){
-                var price = parseInt($content.find('.price').attr('str'))
-                var num = parseInt($content.find('.num').attr('str'))
+                var price = parseInt($content.find('.price').attr('price'))
+                var num = parseInt($content.find('.num').attr('number'))
+                console.log(price)
                 sum += num * price
             }
         })
@@ -86,13 +86,13 @@ $(function () {
     }
 
 
-    // 下单
-    $('#generate-order').click(function () {
-        $.get('/axf/generateorder/', function (response) {
+     // 下单
+    $('#generateorder').click(function () {
+        $.get('/generateorder/', function (response) {
             console.log(response)
-            if (response['status'] == '1'){ // 订单详情(付款)
-                var orderid = response['orderid']
-                window.open('/axf/orderinfo/?orderid='+orderid, target='_self')
+            if (response.status == 1){  // 跳转到订单详情
+                window.open('/orderinfo/'+response.identifier +
+                '/', target='_self')
             }
         })
     })

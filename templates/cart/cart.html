@@ -13,10 +13,52 @@
 {% block content %}
         <div class="cart">
             <ul>
-                {% for foo in  %}
+               {% for cart in carts %}
+                   <li class="goods">
+                        <div class="confirm-wrapper" cartid="{{ cart.id }}" isselect="{{ cart.isselect }}">
+                            {% if cart.isselect %}
+                                <span class="glyphicon glyphicon-ok"></span>
+                                {% else %}
+                                    <span class="no"></span>
+                            {% endif %}
+                        </div>
+                        <div class="content-wrapper">
+                            <div class="img">
+                                <img src="{{ cart.goods.productimg }}" alt="">
+                            </div>
+                            <div class="detail">
+                                <p class="name">
+                                    {{ cart.goods.productlongname }}
+                                </p>
+                                <p class="price" price="{{ cart.goods.marketprice }}">
+                                    {{ cart.goods.price }}
+                                </p>
+                                <p class="num" number="{{ cart.number }}">
+                                    x{{ cart.number }}
+                                </p>
+                            </div>
+                        </div>
+                   </li>
+               {% endfor %}
+
                 
-                {% endfor %}
                 
             </ul>
+
+            <div class="bill">
+                <div class="bill-left">
+                    <div class="all">
+                        <span class="no"></span>
+                        <b>全选</b>
+                    </div>
+                    <div class="total">
+                        <span>总计：￥</span>
+                        <b>0</b>
+                    </div>
+                </div>
+                <div class="bill-right">
+                    下单
+                </div>
+            </div>
         </div>
 {% endblock %}
